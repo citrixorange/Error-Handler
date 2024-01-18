@@ -21,12 +21,11 @@ namespace std {
         
         private:
 
-            std::unordered_map<size_t, unique_ptr<Callback<T,E>>> callbacks_;
+            unordered_map<size_t, shared_ptr<Callback<T,E>>> callbacks_;
             
-            size_t generateUniqueIdentifier(E error, const type_info& typeInfo) {
+            size_t generateUniqueIdentifier(E error) {
                 size_t seed = 0;
                 boost::hash_combine(seed, error);
-                boost::hash_combine(seed, typeInfo.hash_code());
                 return seed;
             }
 
@@ -35,12 +34,12 @@ namespace std {
             CallbackManager() {}
 
             void registerCallback(E error, function<E(T)> callback) {
-                size_t key = this->generateUniqueIdentifier(error, typeid(T));
-                this->callbacks_[key] = make_unique<Callback<T,E>>(Callback<T,E>{callback});
+                size_t key = this->generateUniqueIdentifier(error);
+                this->callbacks_[key] = make_shared<Callback<T,E>>(Callback<T,E>{callback});
             }
 
             optional<E> invokeCallback(E error, T value) {
-                size_t key = this->generateUniqueIdentifier(error, typeid(T));
+                size_t key = this->generateUniqueIdentifier(error);
                 auto it = callbacks_.find(key);
                 if (it != callbacks_.end()) {
                     auto callback = dynamic_cast<Callback<T,E>*>(it->second.get());
