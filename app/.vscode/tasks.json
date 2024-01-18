@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build C++ Erro Handler App",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "${workspaceFolder}/src/main.cpp",
+                "-I",
+                "${workspaceFolder}/../lib/inc",
+                "-o",
+                "main"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": []
+        },
+        {
+            "label": "Transfer Erro Handler App Bin",
+            "type": "shell",
+            "command": "mv",
+            "args": [
+                "main.*",
+                "./bin"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": ["Build C++ Project"]
+        }
+    ]
+}
